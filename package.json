@@ -1,0 +1,17 @@
+{
+  "name": "qa-engineer-takehome",
+  "version": "1.0.0",
+  "private": true,
+  "description": "QA take-home: offline sync API, dynamic survey skip logic, HFC checks and test strategy",
+  "scripts": {
+    "test": "playwright test",
+    "test:api": "playwright test tests/api",
+    "test:web": "playwright test tests/web",
+    "test:report": "playwright show-report",
+    "mock:api": "node src/mock-sync-api.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "express": "^5.1.0"
+  }
+}

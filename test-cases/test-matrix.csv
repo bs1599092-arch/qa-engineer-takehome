@@ -1,0 +1,28 @@
+ID,Area,Scenario,Preconditions,Steps,Expected Result,Priority,Automation
+API-001,Sync,Two workers submit same local ID offline,Ankit and Pooja each have local School_1,POST both distinct client events concurrently,Two server UUID records exist and neither overwrites the other,P0,Automated
+API-002,Sync,Same event retried after timeout,One event already accepted,POST identical workerId and clientEventId twice,Second response returns original server ID; one record only,P0,Automated
+API-003,Sync,Missing clientEventId,API available,POST payload without clientEventId,400 validation error; no record created,P0,Automated
+API-004,Sync,50k clients reconnect together,Load environment and synthetic data,Run ramped load with jitter and capped concurrency,Queue absorbs burst; error rate/latency stay within agreed SLO,P0,Performance
+API-005,Sync,Network drops at 99% photo upload,Proxy and test media configured,Throttle then terminate connection at 99%; reconnect,Upload resumes or restarts safely; no corrupt final attachment; survey retained,P0,Manual+Automation
+API-006,Sync,Server returns 500,Proxy configured to intercept API,Return 500 then restore 200,Local row remains pending; retry scheduled with backoff; no duplicate,P0,Manual+Automation
+WEB-001,Skip Logic,Hobby answer Yes,Student Interests & Hobbies survey loaded,Select Yes,What is your hobby? becomes visible,P0,Automated
+WEB-002,Skip Logic,Hobby answer No,Follow-up initially hidden,Select Yes then No,Follow-up hides and stale answer is cleared or excluded from payload,P0,Automated
+WEB-003,Skip Logic,Change trigger answer repeatedly,Survey loaded,Toggle Yes/No 10 times,Visibility remains deterministic; no duplicate fields or stale values,P1,Automated
+WEB-004,Skip Logic,Disabled visibility logic,Question configured enabled=false,Render question,Question remains visible regardless of target answer,P1,Automated
+WEB-005,Schema,Unknown input type,Schema fixture with unsupported type,Render form,Graceful fallback/error; app does not crash or silently lose data,P1,Automated
+WEB-006,Roster,Dynamic roster count zero/one/max,Count question available,Enter 0, 1 and configured max; navigate back/forward,Correct number of rows and answers persist,P0,Automated
+WEB-007,Matrix,All render modes,SegmentedButton/Dropdown/Input schema,Render and enter one answer per row,Correct values stored for each row,P1,Automated
+HFC-001,HFC,Age<15 AND Education=College,Rule match=all,Enter age 14 and College,Configured reask/flag action fires,P0,Automated
+HFC-002,HFC,AND condition partially false,Rule match=all,Enter age 16 and College,Rule does not fire,P0,Automated
+HFC-003,HFC,OR condition one true,Rule match=any,Make one predicate true,Rule fires once,P1,Automated
+HFC-004,HFC,Missing/null answer,Rule has numeric comparison,Leave value unanswered,No false positive; required/visibility rules handled separately,P1,Automated
+HFC-005,HFC,Boundary values,Rule threshold 6,Test 5.99, 6 and 6.01,Comparison operators behave exactly at boundary,P1,Automated
+HFC-006,HFC,Reask once loop prevention,Rule action reask_once,Enter invalid value then confirm same value,Only one reask; then accept and flag as specified,P0,Automated
+ANDROID-001,Room,Offline persistence,App installed and logged in,Airplane mode; complete survey; force-stop and relaunch,Survey and attachments metadata persist locally,P0,Manual+Automation
+ANDROID-002,WorkManager,Retry after 500,Proxy returns 500,Trigger sync and inspect work state,Work is retryable with backoff; local data retained,P0,Manual+Automation
+ANDROID-003,WorkManager,Duplicate workers,Two devices with same local ID,Sync both devices,Server-side identity prevents overwrite,P0,Manual+Automation
+ANDROID-004,Resources,Low RAM video playback,4GB device or constrained emulator,Play 3-4 modules while collecting logcat/memory,No ANR/OOM; playback releases resources on exit,P0,Manual
+ANDROID-005,Storage,Low disk space,Test device with disposable data,Fill storage to threshold and save survey/photo,Clear error; no partial/corrupt survey; recovery after space freed,P0,Manual
+UX-001,Accessibility,Small touch targets,Training Hub screen,Measure interactive target bounds and tap on small device,Primary controls comfortably tappable (target ~48dp),P1,Manual+Automated
+UX-002,Accessibility,Sunlight contrast,Outdoor/high brightness test,Inspect text/icons in bright light,Text and status not color-only; adequate contrast,P1,Manual
+UX-003,Localization,Long translated labels,Hindi/Marathi/Gujarati/Kannada strings,Switch language and inspect layouts,No clipping/overlap; labels remain understandable,P1,Manual
